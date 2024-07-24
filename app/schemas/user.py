@@ -1,20 +1,11 @@
 # app/schemas/user.py
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    username: constr(min_length=3, max_length=50)
-    password: constr(min_length=8)
+class UserUpdate(BaseModel):
+    bio: Optional[str] = None
+    profile_picture_url: Optional[str] = None
 
-    @validator("password")
-    def validate_password(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters long")
-        if not any(char.isdigit() for char in v):
-            raise ValueError("Password must contain at least one digit")
-        if not any(char.isupper() for char in v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not any(char.islower() for char in v):
-            raise ValueError("Password must contain at least one lowercase letter")
-        if not any(char in "!@#$%^&*()_+" for char in v):
-            raise ValueError("Password must contain at least one special character")
+    @validator("profile_picture_url")
+    def validate_profile_picture_url(cls, v):
+        if v and not v.startswith(("http://", "https://")):
+            raise ValueError("Profile picture URL must start with http:// or https://")
         return v
