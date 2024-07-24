@@ -150,3 +150,13 @@ async def test_update_user_role(db_session: AsyncSession, user: User):
     await db_session.commit()
     await db_session.refresh(user)
     assert user.role == UserRole.ADMIN, "Role update should persist correctly in the database"
+
+def test_user_email_verification(user):
+    user.email_verified = True
+    assert user.email_verified is True
+
+def test_user_profile_update(user):
+    user.profile_picture_url = 'http://newpic.url'
+    user.bio = 'Updated bio'
+    assert user.profile_picture_url == 'http://newpic.url'
+    assert user.bio == 'Updated bio'
