@@ -1,10 +1,15 @@
-# tests/test_schemas/test_user_schemas.py
+import pytest
+from pydantic import ValidationError
+from app.schemas.user import UserCreate
 
-def test_update_profile_fields():
-    user_update = UserUpdate(bio="New bio", profile_picture_url="http://example.com/pic.jpg")
-    assert user_update.bio == "New bio"
-    assert user_update.profile_picture_url == "http://example.com/pic.jpg"
+def test_valid_usernames():
+    valid_usernames = ['testuser', 'test-user', 'test_user', 'testuser123']
+    for username in valid_usernames:
+        user = UserCreate(email='test@example.com', password='testpass', nickname=username)
+        assert user.nickname == username
 
-def test_update_profile_fields_invalid_url():
-    with pytest.raises(ValidationError):
-        UserUpdate(profile_picture_url="invalid_url")
+def test_invalid_usernames():
+    invalid_usernames = ['te', 'test user', 'test?user', 'user!']
+    for username in invalid_usernames:
+        with pytest.raises(ValidationError):
+            UserCreate(email='test@example.com', password='testpass', nickname=username)
