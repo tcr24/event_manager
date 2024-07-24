@@ -1,15 +1,11 @@
-import pytest
-from pydantic import ValidationError
-from app.schemas.user import UserCreate
+def test_valid_passwords():
+    valid_passwords = ['Password1!', 'Secure#1234', 'Complex@Password123']
+    for password in valid_passwords:
+        user = UserCreate(email='test@example.com', password=password, nickname='testuser')
+        assert user.password == password
 
-def test_valid_usernames():
-    valid_usernames = ['testuser', 'test-user', 'test_user', 'testuser123']
-    for username in valid_usernames:
-        user = UserCreate(email='test@example.com', password='testpass', nickname=username)
-        assert user.nickname == username
-
-def test_invalid_usernames():
-    invalid_usernames = ['te', 'test user', 'test?user', 'user!']
-    for username in invalid_usernames:
+def test_invalid_passwords():
+    invalid_passwords = ['short', 'nocapital1!', 'NOLOWER1!', 'NoNumber!', 'NoSpecial1']
+    for password in invalid_passwords:
         with pytest.raises(ValidationError):
-            UserCreate(email='test@example.com', password='testpass', nickname=username)
+            UserCreate(email='test@example.com', password=password, nickname='testuser')
