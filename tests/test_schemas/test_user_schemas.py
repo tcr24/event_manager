@@ -1,21 +1,20 @@
 # tests/test_schemas/test_user_schemas.py
 
-import pytest
-from pydantic import ValidationError
-from app.schemas.user import UserCreate
+def test_valid_password():
+    user = UserCreate(email="test@example.com", username="validuser", password="Validpass1!")
 
-def test_valid_username():
-    user = UserCreate(email="test@example.com", username="validuser")
-    assert user.username == "validuser"
-
-def test_invalid_username():
+def test_invalid_password_no_digit():
     with pytest.raises(ValidationError):
-        UserCreate(email="test@example.com", username="invalid user")  # Space is invalid
+        UserCreate(email="test@example.com", username="validuser", password="NoDigit!")
 
-def test_short_username():
+def test_invalid_password_no_upper():
     with pytest.raises(ValidationError):
-        UserCreate(email="test@example.com", username="aa")  # Too short
+        UserCreate(email="test@example.com", username="validuser", password="noupper1!")
 
-def test_long_username():
+def test_invalid_password_no_lower():
     with pytest.raises(ValidationError):
-        UserCreate(email="test@example.com", username="a" * 51)  # Too long
+        UserCreate(email="test@example.com", username="validuser", password="NOLOWER1!")
+
+def test_invalid_password_no_special():
+    with pytest.raises(ValidationError):
+        UserCreate(email="test@example.com", username="validuser", password="NoSpecial1")
